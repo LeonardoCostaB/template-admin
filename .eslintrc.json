@@ -43,7 +43,7 @@
          "objects": "always-multiline",
          "imports": "never",
          "exports": "always-multiline",
-         "functions": "never"
+         "functions": "always-multiline"
       }]
    }
 }
