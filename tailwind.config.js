@@ -11,6 +11,9 @@ module.exports = {
          fontFamily: {
             sans: 'var(--font-poppins)',
          },
+         colors: {
+            'black-transparent-500': '#0000004d',
+         },
       },
    },
    plugins: [],

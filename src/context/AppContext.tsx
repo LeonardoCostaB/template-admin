@@ -25,7 +25,7 @@ function AppProvider({ children }: AppProviderProps) {
 
    return (
       <AppContext.Provider value={{ theme, isToggleTheme }}>
-         <div className={`${theme} flex h-screen`}>{children}</div>
+         {children}
       </AppContext.Provider>
    );
 }
