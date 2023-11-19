@@ -9,7 +9,7 @@ interface HeaderProps {
 
 export function Header({ title, subTitle }: HeaderProps) {
    return (
-      <header className="flex justify-between px-4">
+      <header className="flex justify-between">
          <Title title={title} subTitle={subTitle} />
 
          <div className="flex items-center gap-1">

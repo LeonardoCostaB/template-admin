@@ -12,6 +12,7 @@ interface AuthContextProps {
    user: User | null;
    googleLogin: () => Promise<void>;
    logout: () => Promise<void>;
+   loading?: boolean;
 }
 
 interface AuthProviderProps {
@@ -26,6 +27,7 @@ const AuthContext = createContext<AuthContextProps>({
 
 function AuthProvider({ children }: AuthProviderProps) {
    const [user2, setUser2] = useState<User | null>(null);
+   const [loadingContent, setLoadingContent] = useState(true);
    const router = useRouter();
 
    async function getSession(userSession: UserFirebase | null) {
@@ -36,11 +38,14 @@ function AuthProvider({ children }: AuthProviderProps) {
 
          isLoggedIn(true);
 
+         setLoadingContent(false);
+
          return userData.email;
       }
 
       setUser2(null);
       isLoggedIn(false);
+      setLoadingContent(false);
 
       return false;
    }
@@ -69,7 +74,9 @@ function AuthProvider({ children }: AuthProviderProps) {
    }, []);
 
    return (
-      <AuthContext.Provider value={{ googleLogin, user: user2, logout }}>
+      <AuthContext.Provider
+         value={{ googleLogin, user: user2, logout, loading: loadingContent }}
+      >
          {children}
       </AuthContext.Provider>
    );
