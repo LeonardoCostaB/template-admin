@@ -17,8 +17,6 @@ export default function Loading() {
       };
    }, []);
 
-   console.log(progress);
-
    return (
       <div
          className="fixed left-0 top-0 h-0.5 w-screen bg-cyan-200 transition-all duration-300 ease-linear"

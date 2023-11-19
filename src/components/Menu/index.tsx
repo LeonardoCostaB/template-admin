@@ -1,6 +1,7 @@
 import { Item } from './Item';
-import { Home, Sliders, Bell, LogOut } from 'lucide-react';
+import { Home, Sliders, Bell, UserCircle2 } from 'lucide-react';
 import { Logo } from '../Logo';
+import { LogoutButton } from './LogoutButton';
 
 export function Menu() {
    return (
@@ -43,11 +44,18 @@ export function Menu() {
 
             <ul>
                <Item
-                  className="text-red-600 hover:bg-red-400 hover:text-white dark:text-red-400 dark:hover:text-white"
-                  text="Logout"
-                  icon={<LogOut size={20} />}
-                  onClick={() => false}
+                  url="/profile"
+                  className=""
+                  text="User"
+                  icon={
+                     <UserCircle2
+                        size={20}
+                        className="text-black dark:text-gray-200"
+                     />
+                  }
                />
+
+               <LogoutButton />
             </ul>
          </nav>
       </aside>

@@ -1,5 +1,6 @@
 import { ThemeButton } from './ThemeButton';
 import { Title } from './Title';
+import { UserAvatar } from './UserAvatar';
 
 interface HeaderProps {
    title: string;
@@ -8,9 +9,13 @@ interface HeaderProps {
 
 export function Header({ title, subTitle }: HeaderProps) {
    return (
-      <header className="flex justify-between">
+      <header className="flex justify-between px-4">
          <Title title={title} subTitle={subTitle} />
-         <ThemeButton />
+
+         <div className="flex items-center gap-1">
+            <ThemeButton />
+            <UserAvatar />
+         </div>
       </header>
    );
 }

@@ -1,9 +1,9 @@
 'use client';
 
-import { createContext, ReactNode, useState } from 'react';
+import { createContext, ReactNode, useEffect, useState } from 'react';
 
 interface AppContextProps {
-   theme: 'dark' | '';
+   theme: string;
    isToggleTheme: () => void;
 }
 
@@ -21,7 +21,19 @@ function AppProvider({ children }: AppProviderProps) {
 
    const isToggleTheme = () => {
       setTheme(theme ? '' : 'dark');
+
+      localStorage.setItem('theme', theme ? 'ligth' : 'dark');
    };
+
+   useEffect(() => {
+      const themeStorage = localStorage.getItem('theme');
+
+      if (!themeStorage) {
+         localStorage.setItem('theme', theme);
+      }
+
+      setTheme(themeStorage === 'ligth' ? '' : 'dark');
+   }, []);
 
    return (
       <AppContext.Provider value={{ theme, isToggleTheme }}>

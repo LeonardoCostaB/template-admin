@@ -3,6 +3,8 @@
 import '../globals.css';
 import { Menu } from '@/components/Menu';
 import { useApp } from '@/hooks/useApp';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 export const metadata = {
    title: 'Template Admin',
@@ -15,6 +17,13 @@ export default function LoggedInLayout({
    children: React.ReactNode;
 }) {
    const { theme } = useApp();
+   const router = useRouter();
+
+   useEffect(() => {
+      if (!document.cookie.includes('isLoggedIn')) {
+         router.push('/unauthenticated');
+      }
+   }, []);
 
    return (
       <div className={`${theme} flex h-screen`}>

@@ -2,7 +2,9 @@
 
 import '../globals.css';
 import { useApp } from '@/hooks/useApp';
+import { userIsLoggedIn } from '@/utils/userIsLoggedIn';
 import Image from 'next/image';
+import { useEffect } from 'react';
 
 export const metadata = {
    title: 'Template Admin',
@@ -16,6 +18,10 @@ export default function LoggedInLayout({
 }) {
    const { theme } = useApp();
 
+   useEffect(() => {
+      userIsLoggedIn();
+   }, []);
+
    return (
       <div className={`${theme} flex`}>
          <Image
@@ -24,7 +30,7 @@ export default function LoggedInLayout({
             width={500}
             height={500}
             objectFit="cover"
-            className="hidden h-screen w-full md:block"
+            className="hidden h-screen w-full max-w-[60%] md:block"
          />
 
          <div className="flex h-screen w-full flex-col items-center justify-center gap-4 bg-gray-300 dark:bg-gray-800 dark:text-gray-200">

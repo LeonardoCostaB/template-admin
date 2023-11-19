@@ -1,11 +1,17 @@
 'use client';
 
-// import firebase from '@/firebase/config';
-import { createContext, ReactNode } from 'react';
+import { createContext, ReactNode, useEffect, useState } from 'react';
+import firebase from '@/firebase/config';
+import { GoogleAuthProvider, User as UserFirebase } from 'firebase/auth';
+import { useRouter } from 'next/navigation';
+import { userFirebase } from '@/utils/userFirebase';
+import { isLoggedIn } from '@/utils/isLoggedinCookie';
+import Cookies from 'js-cookie';
 
 interface AuthContextProps {
-   user?: User;
+   user: User | null;
    googleLogin: () => Promise<void>;
+   logout: () => Promise<void>;
 }
 
 interface AuthProviderProps {
@@ -13,31 +19,57 @@ interface AuthProviderProps {
 }
 
 const AuthContext = createContext<AuthContextProps>({
+   user: null,
    googleLogin: async () => {},
+   logout: async () => {},
 });
 
-// async function userFirebase(user: firebase.User): Promise<User> {
-//    const token = await user.getIdToken();
-
-//    return {
-//       uid: user.uid,
-//       name: user.displayName,
-//       email: user.email,
-//       token,
-//       provider: user.providerData[0].providerId,
-//       img: user.photoURL,
-//    };
-// }
-
 function AuthProvider({ children }: AuthProviderProps) {
-   const googleLogin = async () => {
-      console.log('estou logando com o google');
+   const [user2, setUser2] = useState<User | null>(null);
+   const router = useRouter();
 
-      // const seila = await new Promise((resolve) => resolve);
+   async function getSession(userSession: UserFirebase | null) {
+      if (userSession?.email) {
+         const userData = await userFirebase(userSession);
+
+         setUser2(userData);
+
+         isLoggedIn(true);
+
+         return userData.email;
+      }
+
+      setUser2(null);
+      isLoggedIn(false);
+
+      return false;
+   }
+
+   const googleLogin = async () => {
+      const { user } = await firebase.signInWithPopup(new GoogleAuthProvider());
+
+      await getSession(user as UserFirebase);
+      router.push('/');
    };
 
+   const logout = async () => {
+      await firebase.signOut();
+      await getSession(null);
+      router.push('/login');
+   };
+
+   useEffect(() => {
+      if (Cookies.get('isLoggedIn')) {
+         const removeWatch = firebase.onIdTokenChanged(
+            async (user) => await getSession(user as UserFirebase),
+         );
+
+         return () => removeWatch();
+      }
+   }, []);
+
    return (
-      <AuthContext.Provider value={{ googleLogin }}>
+      <AuthContext.Provider value={{ googleLogin, user: user2, logout }}>
          {children}
       </AuthContext.Provider>
    );

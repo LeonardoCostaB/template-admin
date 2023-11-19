@@ -7,11 +7,17 @@ interface ItemProps {
    url?: string;
    text: string;
    icon: ReactNode;
-   onClick?: (event: MouseEventHandler<HTMLButtonElement>) => void;
+   onClickFunction?: MouseEventHandler<HTMLButtonElement> | undefined;
    className?: string;
 }
 
-export function Item({ url, text, icon, className = '' }: ItemProps) {
+export function Item({
+   url,
+   text,
+   icon,
+   className = '',
+   onClickFunction,
+}: ItemProps) {
    const pathName = usePathname();
 
    return (
@@ -23,7 +29,8 @@ export function Item({ url, text, icon, className = '' }: ItemProps) {
                   `flex h-20 w-20 flex-col items-center justify-center text-xs font-light text-gray-600`,
                   {
                      className: className !== '',
-                     'bg-gray-800 text-cyan-400': pathName === url,
+                     'bg-gray-100 dark:bg-gray-800 dark:text-cyan-400':
+                        pathName === url,
                   },
                )}
             >
@@ -34,6 +41,7 @@ export function Item({ url, text, icon, className = '' }: ItemProps) {
          ) : (
             <button
                className={`flex h-20 w-20 flex-col items-center justify-center text-xs font-light text-gray-600 transition-all dark:text-gray-200 ${className}`}
+               onClick={onClickFunction}
             >
                {icon}
 
