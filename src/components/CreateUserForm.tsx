@@ -1,25 +1,13 @@
 'use client';
 
-import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import { AlertCircle } from 'lucide-react';
 import { Input } from './Input';
+import { useAuth } from '@/hooks/useAuth';
 
 const createUserFormSchema = z.object({
-   name: z
-      .string()
-      .nonempty('Campo Obrigatório')
-      .min(10, 'Nome inválido')
-      .transform((name) => {
-         return name
-            .trim()
-            .split(' ')
-            .map((word) => {
-               return word[0].toUpperCase().concat(word.substring(1));
-            })
-            .join(' ');
-      }),
    email: z
       .string()
       .email('Email inválido')
@@ -34,7 +22,6 @@ const createUserFormSchema = z.object({
       .string()
       .min(6, 'A senha precisa ter no mínimo 6 caracteres')
       .nonempty('Senha é obrigatório'),
-   photo: z.optional(z.string().url()).or(z.literal('')),
 });
 
 type CreateUserFormData = z.infer<typeof createUserFormSchema>;
@@ -43,33 +30,27 @@ export function CreateUserForm() {
    const {
       register,
       handleSubmit,
+      watch,
       formState: { errors },
    } = useForm<CreateUserFormData>({
       resolver: zodResolver(createUserFormSchema),
    });
 
-   function createUser(data: CreateUserFormData) {
-      console.log(data);
+   const { userRegister } = useAuth();
+
+   async function createUser({ email, password }: CreateUserFormData) {
+      await userRegister({ email, password });
    }
+
+   const errorMessageShow =
+      watch('confirmPassword')?.length &&
+      watch('password') !== watch('confirmPassword');
 
    return (
       <form
          onSubmit={handleSubmit(createUser)}
          className="mx-auto my-0 flex w-full max-w-lg flex-col gap-3"
       >
-         <Input
-            labelProps={{ text: 'Nome:' }}
-            inputProps={{
-               type: 'text',
-               size: 'small',
-               register: { ...register('name') },
-            }}
-            error={{
-               show: !!errors.name,
-               message: errors.name?.message,
-            }}
-         />
-
          <Input
             labelProps={{ text: 'Email:' }}
             inputProps={{
@@ -90,11 +71,13 @@ export function CreateUserForm() {
                size: 'small',
                placeholder: 'ex: abVde451',
                register: { ...register('password') },
+               seePassword: true,
             }}
             error={{
                show: !!errors.password,
                message: errors.password?.message,
             }}
+            tutorial
          />
 
          <Input
@@ -103,24 +86,14 @@ export function CreateUserForm() {
                type: 'password',
                size: 'small',
                register: { ...register('confirmPassword') },
+               seePassword: true,
+               disabled: watch('password')?.length < 8 || !watch('password'),
             }}
             error={{
-               show: !!errors.confirmPassword,
-               message: errors.confirmPassword?.message,
-            }}
-         />
-
-         <Input
-            labelProps={{ text: 'Adicionar foto:' }}
-            inputProps={{
-               type: 'text',
-               placeholder: 'https://',
-               size: 'small',
-               register: { ...register('photo') },
-            }}
-            error={{
-               show: !!errors.photo,
-               message: errors.photo?.message,
+               show: !!errors.confirmPassword || !!errorMessageShow,
+               message: errorMessageShow
+                  ? 'Senha não coincidem'
+                  : errors.confirmPassword?.message,
             }}
          />
 

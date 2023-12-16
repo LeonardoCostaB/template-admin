@@ -251,7 +251,7 @@ export default function Unauthenticated() {
 
          <div className="flex max-w-2xl flex-col items-center gap-7">
             <h1 className="text-center text-2xl">
-               Para acessar o admin, você precisar estar logado ou estar com
+               Para acessar o admin, você precisa estar logado ou estar com
                permissão de acesso <br />
                <small className="mt-3 block text-sm">
                   Caso já tenha solicitado a permissão, por favor, aguarde a

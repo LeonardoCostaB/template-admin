@@ -14,6 +14,9 @@ module.exports = {
          colors: {
             'black-transparent-500': '#0000004d',
          },
+         left: {
+            100: 'calc(-100% + -20px)',
+         },
       },
    },
    plugins: [],

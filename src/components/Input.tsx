@@ -1,7 +1,8 @@
 'use client';
 
 import clsx from 'clsx';
-import { useRef } from 'react';
+import { Eye, EyeOff } from 'lucide-react';
+import { useRef, useState } from 'react';
 
 interface InputProps {
    labelProps: {
@@ -13,19 +14,33 @@ interface InputProps {
       placeholder?: string;
       register?: any;
       size: 'small' | 'normal' | 'large';
+      seePassword?: boolean;
+      disabled?: boolean;
    };
    error?: {
       show: boolean;
       message?: string;
    };
+   tutorial?: boolean;
 }
 
 export function Input({
-   inputProps: { type, placeholder, register, size = 'normal' },
+   inputProps: {
+      type,
+      placeholder,
+      register,
+      size = 'normal',
+      seePassword,
+      disabled,
+   },
    labelProps: { text, visible = true },
    error,
+   tutorial = false,
 }: InputProps) {
    const labelRef = useRef<HTMLLabelElement>(null);
+   const [toggleSeePassword, setToggleSeePassword] =
+      useState<string>('password');
+   const [tutorialForPass, setTutorialForPass] = useState<boolean>(false);
 
    return (
       <div className="relative flex flex-col gap-1">
@@ -40,20 +55,57 @@ export function Input({
          </label>
 
          <input
-            type={type}
+            type={seePassword ? toggleSeePassword : type}
             className={clsx(
-               'rounded-lg border bg-gray-200 px-4 text-gray-800',
+               'rounded-lg border bg-gray-200 px-4 text-gray-800 transition-all',
                {
                   'py-2': size == 'small',
                   'py-3': size == 'normal',
                   'py-4': size == 'large',
                   'border-transparent': !error?.show,
                   'border-red-500': error?.show,
+                  'cursor-no-drop opacity-50': disabled,
                },
             )}
             placeholder={placeholder ?? ''}
             {...register}
+            onFocus={tutorial ? () => setTutorialForPass(true) : () => false}
+            onBlur={tutorial ? () => setTutorialForPass(false) : () => false}
+            disabled={disabled}
          />
+
+         {tutorialForPass && (
+            <div className="absolute left-[calc(-42%+-10px)] top-0 w-fit rounded-md bg-white p-4 text-sm text-black shadow-md">
+               Sua senha deve conter:
+               <ul className="ml-8 list-disc text-xs text-black">
+                  <li>No mínimo 8 caracteres</li>
+                  <li>Uma letra maiúscula</li>
+                  <li>Um número</li>
+               </ul>
+               <div className="absolute left-[calc(100%+-10px)] top-1/2 h-5 w-5 -translate-y-1/2 rotate-45 bg-white" />
+            </div>
+         )}
+
+         {seePassword && (
+            <button
+               type="button"
+               className={clsx('absolute right-2 text-sm text-black', {
+                  'top-[42px]': size === 'small',
+                  'top-[46px]': size === 'normal',
+               })}
+               onClick={() =>
+                  setToggleSeePassword((prev) =>
+                     prev === 'password' ? 'text' : 'password',
+                  )
+               }
+            >
+               {toggleSeePassword === 'password' ? (
+                  <Eye size={16} />
+               ) : (
+                  <EyeOff size={16} />
+               )}
+            </button>
+         )}
 
          {error?.message && (
             <span

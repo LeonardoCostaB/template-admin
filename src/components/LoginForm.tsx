@@ -5,13 +5,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import Link from 'next/link';
 import { useAuth } from '@/hooks/useAuth';
+import { Input } from './Input';
+import { Loader2Icon } from 'lucide-react';
 
 const userLoginFormSchema = z.object({
    email: z.string().email('Email inválido').nonempty('Email é obrigatório'),
-   password: z
-      .string()
-      .min(6, 'A senha precisa ter no mínimo 6 caracteres')
-      .nonempty('Senha é obrigatório'),
+   password: z.string().nonempty('Senha é obrigatório'),
 });
 
 type UserLoginFormData = z.infer<typeof userLoginFormSchema>;
@@ -25,11 +24,7 @@ export function LoginForm() {
       resolver: zodResolver(userLoginFormSchema),
    });
 
-   const { googleLogin } = useAuth();
-
-   function login(data: any) {
-      console.log(data);
-   }
+   const { googleLogin, login, loading } = useAuth();
 
    return (
       <>
@@ -37,31 +32,44 @@ export function LoginForm() {
             onSubmit={handleSubmit(login)}
             className="mx-auto my-0 flex w-full flex-col gap-4 max-md:px-4 sm:max-w-sm"
          >
-            <div className="flex flex-col gap-1">
-               <label htmlFor="email">Email</label>
-               <input
-                  type="email"
-                  {...register('email')}
-                  className="rounded-lg bg-gray-200 px-4 py-3 text-gray-800"
-               />
-               {errors.email && <span>{errors.email.message}</span>}
-            </div>
+            <Input
+               labelProps={{ text: 'Email:' }}
+               inputProps={{
+                  type: 'email',
+                  size: 'normal',
+                  register: { ...register('email') },
+               }}
+               error={{
+                  show: !!errors.email,
+                  message: errors.email?.message,
+               }}
+            />
 
-            <div className="flex flex-col gap-1">
-               <label htmlFor="password">Senha</label>
-               <input
-                  type="password"
-                  {...register('password')}
-                  className="rounded-lg bg-gray-200 px-4 py-3 text-gray-800"
-               />
-               {errors.password && <span>{errors.password.message}</span>}
-            </div>
+            <Input
+               labelProps={{ text: 'Senha:' }}
+               inputProps={{
+                  type: 'password',
+                  size: 'normal',
+                  placeholder: 'ex: abVde451',
+                  register: { ...register('password') },
+                  seePassword: true,
+               }}
+               error={{
+                  show: !!errors.password,
+                  message: errors.password?.message,
+               }}
+            />
 
             <button
                type="submit"
-               className="w-full rounded-lg bg-indigo-500 py-2 text-white transition-all duration-300 ease-out hover:bg-indigo-700"
+               className="flex h-10 w-full items-center justify-center rounded-lg bg-indigo-500 py-2 text-white transition-all duration-300 ease-out hover:bg-indigo-700 disabled:cursor-no-drop disabled:opacity-50"
+               disabled={!loading}
             >
-               Entrar
+               {!loading ? (
+                  <Loader2Icon size={24} className="animate-spin" />
+               ) : (
+                  'Entrar'
+               )}
             </button>
 
             <div className="flex items-center gap-2 before:h-[1px] before:flex-1 before:bg-gray-300 after:h-[1px] after:flex-1 after:bg-gray-300">
