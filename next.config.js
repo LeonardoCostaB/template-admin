@@ -4,7 +4,12 @@ const nextConfig = {
       appDir: true,
    },
    images: {
-      domains: ['source.unsplash.com', 'lh3.googleusercontent.com'],
+      domains: [
+         'source.unsplash.com',
+         'lh3.googleusercontent.com',
+         'instagram.fsdu1-1.fna.fbcdn.net',
+         'scontent.fsdu1-1.fna.fbcdn.net',
+      ],
       minimumCacheTTL: 60,
    },
 };

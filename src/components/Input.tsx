@@ -16,7 +16,12 @@ interface InputProps {
       size: 'small' | 'normal' | 'large';
       seePassword?: boolean;
       disabled?: boolean;
+      refValue?: string | null;
+      focusEv?: (value: string) => void;
+      blurEv?: (value: string) => void;
+      changeEv?: (value: string) => void;
    };
+   customClasses?: string;
    error?: {
       show: boolean;
       message?: string;
@@ -32,8 +37,13 @@ export function Input({
       size = 'normal',
       seePassword,
       disabled,
+      refValue = '',
+      focusEv,
+      blurEv,
+      changeEv,
    },
    labelProps: { text, visible = true },
+   customClasses,
    error,
    tutorial = false,
 }: InputProps) {
@@ -43,7 +53,11 @@ export function Input({
    const [tutorialForPass, setTutorialForPass] = useState<boolean>(false);
 
    return (
-      <div className="relative flex flex-col gap-1">
+      <div
+         className={clsx('relative flex flex-col gap-1', {
+            [`${customClasses}`]: customClasses && customClasses?.length > 0,
+         })}
+      >
          <label
             htmlFor="email"
             className={clsx('w-fit', {
@@ -57,7 +71,7 @@ export function Input({
          <input
             type={seePassword ? toggleSeePassword : type}
             className={clsx(
-               'rounded-lg border bg-gray-200 px-4 text-gray-800 transition-all',
+               'w-full rounded-lg border bg-gray-200 px-4 text-gray-800 transition-all',
                {
                   'py-2': size == 'small',
                   'py-3': size == 'normal',
@@ -69,9 +83,23 @@ export function Input({
             )}
             placeholder={placeholder ?? ''}
             {...register}
-            onFocus={tutorial ? () => setTutorialForPass(true) : () => false}
-            onBlur={tutorial ? () => setTutorialForPass(false) : () => false}
+            onFocus={
+               tutorial
+                  ? () => setTutorialForPass(true)
+                  : focusEv
+                  ? (e) => focusEv(e.target.value)
+                  : () => false
+            }
+            onBlur={
+               tutorial
+                  ? () => setTutorialForPass(false)
+                  : blurEv
+                  ? (e) => blurEv(e.target.value)
+                  : () => false
+            }
             disabled={disabled}
+            {...(refValue ? { value: refValue } : false)}
+            {...(changeEv ? { onChange: (e) => changeEv(e.target.value) } : {})}
          />
 
          {tutorialForPass && (

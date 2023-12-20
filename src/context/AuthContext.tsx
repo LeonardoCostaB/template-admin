@@ -109,7 +109,6 @@ function AuthProvider({ children }: AuthProviderProps) {
    };
 
    const userRegister = async ({ email, password }: LoginProps) => {
-      console.log('email:', email, 'pass:', password);
       try {
          const createUser = await firebase.createUserWithEmailAndPassword(
             email,
