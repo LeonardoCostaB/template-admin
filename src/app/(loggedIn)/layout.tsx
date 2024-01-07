@@ -29,7 +29,7 @@ export default function LoggedInLayout({
    }, []);
 
    return (
-      <div className={`${theme} flex h-screen`}>
+      <div className={`${theme} flex min-h-screen`}>
          <Menu />
          <div className="flex w-full flex-col bg-gray-300 p-6 dark:bg-gray-800 dark:text-gray-200">
             {loading ? <LoggedinPages /> : <>{children}</>}

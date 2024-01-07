@@ -17,6 +17,13 @@ module.exports = {
          left: {
             100: 'calc(-100% + -20px)',
          },
+         backgroundSize: {
+            'size-200': '200% 200%',
+         },
+         backgroundPosition: {
+            'pos-0': '0% 0%',
+            'pos-100': '100% 100%',
+         },
       },
    },
    plugins: [],

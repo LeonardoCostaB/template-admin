@@ -10,3 +10,15 @@
 .left-calc {
    left: calc(-100% + -20px);
 }
+
+.background-animate {
+   -webkit-animation: AnimationName 3s ease infinite;
+   -moz-animation: AnimationName 3s ease infinite;
+   animation: AnimationName 3s ease infinite;
+}
+
+@keyframes AnimationName {
+   100% {
+      background-image: linear-gradient(to #1e3a8a);
+   }
+}

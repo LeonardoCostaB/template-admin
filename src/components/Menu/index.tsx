@@ -1,5 +1,5 @@
 import { Item } from './Item';
-import { Home, Sliders, Bell, UserCircle2 } from 'lucide-react';
+import { Home, Sliders, Bell, UserCircle2, Briefcase } from 'lucide-react';
 import { Logo } from '../Logo';
 import { LogoutButton } from './LogoutButton';
 
@@ -35,6 +35,16 @@ export function Menu() {
                   text="Notifications"
                   icon={
                      <Bell
+                        size={20}
+                        className="text-black dark:text-gray-200"
+                     />
+                  }
+               />
+               <Item
+                  url="/clients"
+                  text="Clients"
+                  icon={
+                     <Briefcase
                         size={20}
                         className="text-black dark:text-gray-200"
                      />
